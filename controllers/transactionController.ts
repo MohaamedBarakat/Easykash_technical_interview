@@ -10,8 +10,16 @@ const getTransactionSeller = async (req: Request, res: Response, next: NextFunct
         let date_range:any = req.query.date_range;
         let start:any;
         let end:any;
+        let dateData: any;
         if(date_range){
             [start,end] = date_range.split('_')
+        }
+        if(start && end){
+            dateData = {
+                createdAt :{
+                    [sequelize.Op.between]:[new Date(start), new Date(end)]
+                }
+             }
         }
         console.log(start,end)
 
@@ -35,9 +43,7 @@ const getTransactionSeller = async (req: Request, res: Response, next: NextFunct
             },
             where:
             {
-                createdAt :{
-                    [sequelize.Op.between]:[start,end]
-                },
+                ...dateData,
                 SellerId: SellerId
             }
         });
@@ -54,7 +60,6 @@ const getTransactionSeller = async (req: Request, res: Response, next: NextFunct
             }
             
         })
-        
 
     } catch (err) {
         next(err);

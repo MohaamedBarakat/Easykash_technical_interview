@@ -6,21 +6,33 @@ const getSummaryTransaction = async(req: Request, res: Response, next: NextFunct
     try {
 
         const sellerId = req.query.seller_id;
-        const date_range = req.query.date_range;
-
+        const date_range: any = req.query.date_range;
+        let start: any;
+        let end: any;
+        let dateData: any;
+        if(date_range){
+            [start,end] = date_range.split('_')
+        }
+        if(start && end){
+            dateData = {
+                createdAt :{
+                    [sequelize.Op.between]:[new Date(start), new Date(end)]
+                }
+             }
+        }
         const seller = await db.Seller.findByPk(sellerId);
         const createdAtObj = await db.Transaction.findAll({
             where : 
             {
-                SellerId : seller.id
+                SellerId : seller.id,
+                ...dateData
             },
             attributes:[[sequelize.fn('date_format', sequelize.col('createdAt'), '%Y-%m-%d'), 'createdAt']],            
         });
-
         const createdAtList = createdAtObj.map((item: any) => item.createdAt);
         const distinctCreatedAt = createdAtList.filter((item: any,index: any,arr: any) => {
             return arr.indexOf(item) === index;
-            })
+            });
         let list_total_date: any = [];
         let listDays: any = [];
         for (let index = 0; index < distinctCreatedAt.length; index++) {
@@ -30,11 +42,12 @@ const getSummaryTransaction = async(req: Request, res: Response, next: NextFunct
                 {
                     SellerId : seller.id,
                     createdAt:{
-                        [sequelize.Op.eq] : distinctCreatedAt[0]
-                    } 
+                        [sequelize.Op.between] : [`${distinctCreatedAt[index]} 00:00:00`,`${distinctCreatedAt[index]} 23:59:00`]
+                    }
                 },
                 raw: true,
             });
+            console.log(list_total_date);
             listDays = [...listDays,{
                 total_amount:list_total_date[0].total_amount,
                 date:list_total_date[0].date,
