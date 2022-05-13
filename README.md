@@ -9,7 +9,9 @@ run the following command :
 npm install 
 
 open .env file
-replace the DB_USER and DB_PASS by your own
+replace the DB_USER and DB_PASS by your own Then run the following command
+
+npm run dev
 
 now the project should run correctly
 
