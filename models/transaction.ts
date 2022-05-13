@@ -36,7 +36,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     price:{
       type: DataTypes.INTEGER,
       allowNull: false
-    }
+    },
   }, {
     sequelize,
     modelName: 'Transaction',

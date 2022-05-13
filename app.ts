@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/seller',sellerRoutes);
+app.use('/sellers',sellerRoutes);
 app.use('/transactions',transactionRoutes);
 
 app.use((error: TypeError, req: Request, res: Response, next: NextFunction) => {

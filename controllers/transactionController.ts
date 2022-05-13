@@ -7,8 +7,14 @@ const getTransactionSeller = async (req: Request, res: Response, next: NextFunct
         const page = req.query.page || 0;
         const per_page = req.query.per_page || 0;
         const SellerId = req.query.seller_id;
-        const date_range = req.query.date_range;
-        const [start,end] = [new Date (13-5-2022),new Date(1-6-2022)]
+        let date_range:any = req.query.date_range;
+        let start:any;
+        let end:any;
+        if(date_range){
+            [start,end] = date_range.split('_')
+        }
+        console.log(start,end)
+
         const skip: number = (+page - 1) * +per_page + 1;
         const totalTransactionSeller = await db.Transaction.count({
             where : 
@@ -29,26 +35,24 @@ const getTransactionSeller = async (req: Request, res: Response, next: NextFunct
             },
             where:
             {
-                /*createdAt :
-                {
+                createdAt :{
                     [sequelize.Op.between]:[start,end]
-                },*/
+                },
                 SellerId: SellerId
             }
-            
-            
-
-
         });
-        console.log(transaction);
-
         return res.status(200).json({
-            transaction: transaction,
-            paging:{
-                total: totalTransactionSeller,
-                current_page: page,
-                per_page: per_page 
+            data : 
+            {
+                transaction: transaction,
+                paging:
+                {
+                    total: totalTransactionSeller,
+                    current_page: page,
+                    per_page: per_page 
+                }
             }
+            
         })
         
 
