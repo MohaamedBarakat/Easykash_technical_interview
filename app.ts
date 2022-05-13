@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use('/seller',sellerRoutes);
-app.use('/transaction',transactionRoutes);
+app.use('/transactions',transactionRoutes);
 
 app.use((error: TypeError, req: Request, res: Response, next: NextFunction) => {
     return res.json({
